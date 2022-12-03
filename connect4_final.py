@@ -208,11 +208,17 @@ def print_board(board):
     print('  ' + ' '.join('0123456'))
 
 def simeple_AI_choice(board):
+    #random choice a place to drop the dice
+    possible_list = valid_col_list(board)
+    choose = -1
+    if len(possible_list) > 0:
+        choose = random.choice(possible_list)
+    return choose
     return None
 
 
 if __name__ == '__main__':
-    print("choose if you want to play or just want to see the analysis result. For play enter 1. For see analysis result eneter 2")
+    print("choose if you want to play or just want to see the analysis result. For play enter 1. For see analysis result eneter 2. For see simple AI against MCTS AI eneter 3")
     play_decision = int(input())
 
     mcts = None
@@ -274,5 +280,54 @@ if __name__ == '__main__':
                 if winner != 0:
                     print('Winner : ', 'PLAYER' if winner == PLAYER else 'AI')
                     break
+    
+    if play_decision == 3:
+        
+        board = create_new_board()
+        count = 0
+        training_time = 2500
+        node = mcts
+        print_board(board)
+        winner = 0
+        while True:
+            if count == 0:
+                #has some probability to drop the dice for requirement
+                drop_decision = random.uniform(0,1)
+                #print(drop_decision)
+
+                #random choice one to put
+                move = int(simeple_AI_choice(board))
+                if drop_decision < DROP_PROBABILITY:
+                    print("SIMPLE_AI drop")
+                    count = (count + 1)%2
+                else:
+                    new_node = node.get_child(move)
+                    node = rollout_times(node, training_time, PLAYER).get_child(move)
+                    board, winner = drop_dice(board, move, PLAYER)
+                    count = (count + 1)%2
+            else:
+                #has some probability to drop the dice for requirement
+                drop_decision = random.uniform(0,1)
+                #print(drop_decision)
+                if drop_decision < DROP_PROBABILITY:
+                    print("AI drop")
+                    count = (count + 1)%2
+                else:
+                    new_node, move = node.select_child()
+                    node = rollout_times(node, training_time, AI)
+                    # print([(n.win, n.games) for n in node.children])
+                    node, move = node.select_child()
+                    board, winner = drop_dice(board, move, AI)
+                    count = (count + 1)%2
+
+            
+
+            #print(board)
+            print_board(board)
+
+            if winner != 0:
+                print('Winner : ', 'SIMPLE_AI' if winner == PLAYER else 'AI')
+                break
+
                 
         
