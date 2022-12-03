@@ -208,6 +208,7 @@ def print_board(board):
 
 
 if __name__ == '__main__':
+    print("choose if want to play or not")
     mcts = None
 
     for i in range(800):
