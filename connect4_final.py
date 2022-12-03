@@ -134,7 +134,7 @@ def roll_once(board, player):
         #player = (player)%2 + 1
 
         
-def rollout(mcts_node = None):
+def rollout(mcts_node = None, player = None):
     if mcts_node == None:
          mcts_node = Node(create_new_board(), 0, None,  None)
     
@@ -162,10 +162,10 @@ def rollout(mcts_node = None):
                 winner_persion = node.is_winning
             else:
                 node = random.choice(node.children)
-                winner_persion = roll_once(node.state, get_player(node.state))
-                #board = node.state
-                #player = get_player(board)
-                #winner_persion = drop_dice(node.state,col)
+                if player == None:
+                    player = get_player(node.state)
+                winner_persion = roll_once(node.state, player)
+                #winner_persion = roll_once(node.state, get_player(node.state))
         else:
             winner_persion = node.is_winning
         
@@ -181,11 +181,11 @@ def rollout(mcts_node = None):
     return mcts_node
 
 
-def rollout_times(current_node, training_time):
+def rollout_times(current_node, training_time, player = None):
     start = int(round(time.time() * 1000))
     current = start
     while (current - start) < training_time:
-        current_node = rollout(current_node)
+        current_node = rollout(current_node, player)
         current = int(round(time.time() * 1000))
     return current_node
 
@@ -207,9 +207,14 @@ def print_board(board):
     print(' ' + res)
     print('  ' + ' '.join('0123456'))
 
+def simeple_AI_choice(board):
+    return None
+
 
 if __name__ == '__main__':
-    print("choose if want to play or not")
+    print("choose if you want to play or just want to see the analysis result. For play enter 1. For see analysis result eneter 2")
+    play_decision = int(input())
+
     mcts = None
 
     for i in range(800):
@@ -219,55 +224,55 @@ if __name__ == '__main__':
     
     #print('training finished, total is: ',mcts.score_total, ' visit count is: ', mcts.visit_count, 'score_estimate :',mcts.score_total /mcts.visit_count)
     
-
-    while True:
-        # test AI with real play
-        board = create_new_board()
-        count = 0
-        training_time = 2000
-        node = mcts
-        #print(node.score_total)
-        print_board(board)
-        
-        winner = 0
-        
+    if play_decision == 1:
         while True:
-            if count == 0:
-                #has some probability to drop the dice for requirement
-                drop_decision = random.uniform(0,1)
-                #print(drop_decision)
-                move = int(input())
-                if drop_decision < DROP_PROBABILITY:
-                    print("Player drop")
-                    count = (count + 1)%2
-                else:
-                    new_node = node.get_child(move)
-                    node = rollout_times(node, training_time).get_child(move)
-                    board, winner = drop_dice(board, move, PLAYER)
-                    count = (count + 1)%2
-            else:
-                #has some probability to drop the dice for requirement
-                drop_decision = random.uniform(0,1)
-                #print(drop_decision)
-                if drop_decision < DROP_PROBABILITY:
-                    print("AI drop")
-                    count = (count + 1)%2
-                else:
-                    new_node, move = node.select_child()
-                    node = rollout_times(node, training_time)
-                    # print([(n.win, n.games) for n in node.children])
-                    node, move = node.select_child()
-                    board, winner = drop_dice(board, move, AI)
-                    count = (count + 1)%2
-
-           
-
-            #print(board)
+            # test AI with real play
+            board = create_new_board()
+            count = 0
+            training_time = 2000
+            node = mcts
+            #print(node.score_total)
             print_board(board)
-
-
-            if winner != 0:
-                print('Winner : ', 'PLAYER' if winner == PLAYER else 'AI')
-                break
             
-    
+            winner = 0
+            
+            while True:
+                if count == 0:
+                    #has some probability to drop the dice for requirement
+                    drop_decision = random.uniform(0,1)
+                    #print(drop_decision)
+                    move = int(input())
+                    if drop_decision < DROP_PROBABILITY:
+                        print("Player drop")
+                        count = (count + 1)%2
+                    else:
+                        new_node = node.get_child(move)
+                        node = rollout_times(node, training_time, PLAYER).get_child(move)
+                        board, winner = drop_dice(board, move, PLAYER)
+                        count = (count + 1)%2
+                else:
+                    #has some probability to drop the dice for requirement
+                    drop_decision = random.uniform(0,1)
+                    #print(drop_decision)
+                    if drop_decision < DROP_PROBABILITY:
+                        print("AI drop")
+                        count = (count + 1)%2
+                    else:
+                        new_node, move = node.select_child()
+                        node = rollout_times(node, training_time, AI)
+                        # print([(n.win, n.games) for n in node.children])
+                        node, move = node.select_child()
+                        board, winner = drop_dice(board, move, AI)
+                        count = (count + 1)%2
+
+            
+
+                #print(board)
+                print_board(board)
+
+
+                if winner != 0:
+                    print('Winner : ', 'PLAYER' if winner == PLAYER else 'AI')
+                    break
+                
+        
