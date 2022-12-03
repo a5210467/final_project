@@ -184,7 +184,7 @@ def rollout_times(current_node, training_time):
     start = int(round(time.time() * 1000))
     current = start
     while (current - start) < training_time:
-        current_node = rollout(mcts)
+        current_node = rollout(current_node)
         current = int(round(time.time() * 1000))
     return current_node
 
