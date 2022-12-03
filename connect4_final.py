@@ -123,12 +123,13 @@ def roll_once(board, player):
 
         if win_person != 0:
             return player
-        
+        '''
         drop_possible = random.uniform(0,1)
         if drop_possible >= DROP_PROBABILITY:
             player = (player)%2 + 1
         else:
             player = player
+        '''
         
         #player = (player)%2 + 1
 
