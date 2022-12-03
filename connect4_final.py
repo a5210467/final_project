@@ -296,7 +296,7 @@ if __name__ == '__main__':
 
     mcts = None
 
-    for i in range(800):
+    for i in range(1500):
         mcts = rollout(mcts)
         if i % (1000 // 10) == 0: print(i, mcts.score_total /mcts.visit_count)
     
