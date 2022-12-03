@@ -229,7 +229,7 @@ if __name__ == '__main__':
             # test AI with real play
             board = create_new_board()
             count = 0
-            training_time = 2000
+            training_time = 2500
             node = mcts
             #print(node.score_total)
             print_board(board)
