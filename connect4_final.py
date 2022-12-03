@@ -265,7 +265,7 @@ if __name__ == '__main__':
 
 
             if winner != 0:
-                print('Winner : ', 'AI' if winner == PLAYER else 'PLAYER')
+                print('Winner : ', 'PLAYER' if winner == PLAYER else 'AI')
                 break
             
     
