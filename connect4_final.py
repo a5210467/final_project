@@ -225,7 +225,7 @@ def test_hundred_times():
     for i in range(100):
         board = create_new_board()
         count = 0
-        training_time = 2500
+        training_time = 2000
         node = mcts
         #print_board(board)
         winner = 0
@@ -241,7 +241,11 @@ def test_hundred_times():
                     #print("SIMPLE_AI drop")
                     count = (count + 1)%2
                 else:
-                    new_node = node.get_child(move)
+                    try:
+                        new_node = node.get_child(move)
+                    except:
+                        tide_game_time += 1
+                        break
                     node = rollout_times(node, training_time, PLAYER).get_child(move)
                     board, winner = drop_dice(board, move, PLAYER)
                     count = (count + 1)%2
@@ -280,7 +284,7 @@ def test_hundred_times():
                     AI_winning_time +=1
                 break
     
-    return SIMPLE_AI_winning_time, AI_winning_time
+    return SIMPLE_AI_winning_time, AI_winning_time, tide_game_time
 
 
 
@@ -399,8 +403,8 @@ if __name__ == '__main__':
                 break
     
     if play_decision == 4:
-        SIMPLE_AI_winning_time, AI_winning_time = test_hundred_times()
-        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time)
+        SIMPLE_AI_winning_time, AI_winning_time, tide_game_times = test_hundred_times()
+        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\n tide games: ', tide_game_times)
         
 
                 
