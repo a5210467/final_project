@@ -180,13 +180,13 @@ def rollout(mcts_node = None):
     return mcts_node
 
 
-def rollout_times(mcts, training_time):
+def rollout_times(current_node, training_time):
     start = int(round(time.time() * 1000))
     current = start
     while (current - start) < training_time:
-        mcts = rollout(mcts)
+        current_node = rollout(mcts)
         current = int(round(time.time() * 1000))
-    return mcts
+    return current_node
 
 
 def print_board(board):
@@ -230,7 +230,7 @@ if __name__ == '__main__':
         winner = 0
         
         while True:
-            if count  == 0:
+            if count == 0:
                 drop_decision = random.uniform(0,1)
                 #print(drop_decision)
                 move = int(input())
