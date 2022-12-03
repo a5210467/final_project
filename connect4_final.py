@@ -155,7 +155,7 @@ def rollout(mcts_node = None):
             states = [(drop_dice(node.state, move), move) for move in valid_move]
             #print(states)
             node.put_children([Node(state_winning[0], state_winning[1], move=move, parent=node) for state_winning, move in states])
-            wining_node_list = [n for n in node.children if n.is_winning]
+            wining_node_list = [n_c for n_c in node.children if n_c.is_winning]
             if len(wining_node_list) > 0:
                 node = wining_node_list[0]
                 winner_persion = node.is_winning
@@ -231,6 +231,7 @@ if __name__ == '__main__':
         
         while True:
             if count == 0:
+                #has some probability to drop the dice for requirement
                 drop_decision = random.uniform(0,1)
                 #print(drop_decision)
                 move = int(input())
@@ -243,6 +244,7 @@ if __name__ == '__main__':
                     board, winner = drop_dice(board, move, PLAYER)
                     count = (count + 1)%2
             else:
+                #has some probability to drop the dice for requirement
                 drop_decision = random.uniform(0,1)
                 #print(drop_decision)
                 if drop_decision < DROP_PROBABILITY:
