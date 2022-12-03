@@ -40,3 +40,8 @@ def get_next_open_row(board, col):
         return np.where(board[:,col] == 0)[0][-1]
 
 print(get_next_open_row(board,2))
+
+'''
+for i in range(1000):
+    while True:
+'''        

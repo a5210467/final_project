@@ -216,9 +216,78 @@ def simeple_AI_choice(board):
     return choose
     return None
 
+def test_hundred_times():
+    SIMPLE_AI_winning_time = 0
+    AI_winning_time = 0
+    tide_game_time = 0
+
+    
+    for i in range(100):
+        board = create_new_board()
+        count = 0
+        training_time = 2500
+        node = mcts
+        #print_board(board)
+        winner = 0
+        while True:
+            if count == 0:
+                #has some probability to drop the dice for requirement
+                drop_decision = random.uniform(0,1)
+                #print(drop_decision)
+
+                #random choice one to put
+                move = int(simeple_AI_choice(board))
+                if drop_decision < DROP_PROBABILITY:
+                    #print("SIMPLE_AI drop")
+                    count = (count + 1)%2
+                else:
+                    new_node = node.get_child(move)
+                    node = rollout_times(node, training_time, PLAYER).get_child(move)
+                    board, winner = drop_dice(board, move, PLAYER)
+                    count = (count + 1)%2
+            else:
+                #has some probability to drop the dice for requirement
+                drop_decision = random.uniform(0,1)
+                #print(drop_decision)
+                if drop_decision < DROP_PROBABILITY:
+                    #print("AI drop")
+                    count = (count + 1)%2
+                else:
+                    try:
+                        new_node, move = node.select_child()
+                    except:
+                        tide_game_time += 1
+                        break
+                    node = rollout_times(node, training_time, AI)
+                    # print([(n.win, n.games) for n in node.children])
+                    try:
+                        node, move = node.select_child()
+                    except:
+                        tide_game_time += 1
+                        break
+                    board, winner = drop_dice(board, move, AI)
+                    count = (count + 1)%2
+
+            
+
+            #print_board(board)
+
+            if winner != 0:
+                print('Winner : ', 'SIMPLE_AI' if winner == PLAYER else 'AI')
+                if winner == PLAYER:
+                    SIMPLE_AI_winning_time += 1
+                else:
+                    AI_winning_time +=1
+                break
+    
+    return SIMPLE_AI_winning_time, AI_winning_time
+
+
 
 if __name__ == '__main__':
-    print("choose if you want to play or just want to see the analysis result. For play enter 1. For see analysis result eneter 2. For see simple AI against MCTS AI eneter 3")
+    print("choose if you want to play or just want to see the analysis result.")
+     
+    print("For play enter 1. \n For see analysis result eneter 2. \n For see simple AI against MCTS AI eneter 3 \n For see 100 SIMPLE_AI against AI result enter 4")
     play_decision = int(input())
 
     mcts = None
@@ -282,7 +351,7 @@ if __name__ == '__main__':
                     break
     
     if play_decision == 3:
-        
+
         board = create_new_board()
         count = 0
         training_time = 2500
@@ -328,6 +397,11 @@ if __name__ == '__main__':
             if winner != 0:
                 print('Winner : ', 'SIMPLE_AI' if winner == PLAYER else 'AI')
                 break
+    
+    if play_decision == 4:
+        SIMPLE_AI_winning_time, AI_winning_time = test_hundred_times()
+        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time)
+        
 
                 
         
