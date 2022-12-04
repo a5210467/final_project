@@ -205,7 +205,10 @@ def print_board(board):
     res = res.replace('[', ' ')
     res = res.replace(']', ' ')
     print(' ' + res)
-    print('  ' + ' '.join('0123456'))
+    col_string = ''
+    for i in range(COLUMN_NUMBER):
+        col_string += str(i)
+    print('  ' + ' '.join(col_string))
 
 def simeple_AI_choice(board):
     #random choice a place to drop the dice
@@ -219,7 +222,7 @@ def simeple_AI_choice(board):
 def test_hundred_times():
     SIMPLE_AI_winning_time = 0
     AI_winning_time = 0
-    tide_game_time = 0
+    tie_game_time = 0
 
     
     for i in range(100):
@@ -244,7 +247,7 @@ def test_hundred_times():
                     try:
                         new_node = node.get_child(move)
                     except:
-                        tide_game_time += 1
+                        tie_game_time += 1
                         break
                     node = rollout_times(node, training_time, PLAYER).get_child(move)
                     board, winner = drop_dice(board, move, PLAYER)
@@ -260,14 +263,14 @@ def test_hundred_times():
                     try:
                         new_node, move = node.select_child()
                     except:
-                        tide_game_time += 1
+                        tie_game_time += 1
                         break
                     node = rollout_times(node, training_time, AI)
                     # print([(n.win, n.games) for n in node.children])
                     try:
                         node, move = node.select_child()
                     except:
-                        tide_game_time += 1
+                        tie_game_time += 1
                         break
                     board, winner = drop_dice(board, move, AI)
                     count = (count + 1)%2
@@ -284,14 +287,20 @@ def test_hundred_times():
                     AI_winning_time +=1
                 break
     
-    return SIMPLE_AI_winning_time, AI_winning_time, tide_game_time
+    return SIMPLE_AI_winning_time, AI_winning_time, tie_game_time
 
 
 
 if __name__ == '__main__':
-    print("choose if you want to play or just want to see the analysis result.")
+    print('Choose the size you want to play, stardard is 6*7 has 6 row and 7 column')
+    print('Please input row number: ')
+    ROW_NUMBER = int(input())
+    print('Please input col number: ')
+    COLUMN_NUMBER = int(input())
+
+    print(" Choose if you want to play or just want to see the analysis result.")
      
-    print("For play enter 1. \n For see analysis result eneter 2. \n For see simple AI against MCTS AI eneter 3 \n For see 100 SIMPLE_AI against AI result enter 4")
+    print(" For play enter 1. \n For see analysis result eneter 2. \n For see simple AI against MCTS AI eneter 3 \n For see 100 SIMPLE_AI against AI result enter 4")
     play_decision = int(input())
 
     mcts = None
@@ -361,6 +370,7 @@ if __name__ == '__main__':
         training_time = 2500
         node = mcts
         print_board(board)
+        tie_game = False
         winner = 0
         while True:
             if count == 0:
@@ -374,7 +384,11 @@ if __name__ == '__main__':
                     print("SIMPLE_AI drop")
                     count = (count + 1)%2
                 else:
-                    new_node = node.get_child(move)
+                    try:
+                        new_node = node.get_child(move)
+                    except:
+                        tie_game = True
+                    #new_node = node.get_child(move)
                     node = rollout_times(node, training_time, PLAYER).get_child(move)
                     board, winner = drop_dice(board, move, PLAYER)
                     count = (count + 1)%2
@@ -386,10 +400,18 @@ if __name__ == '__main__':
                     print("AI drop")
                     count = (count + 1)%2
                 else:
-                    new_node, move = node.select_child()
+                    try:
+                        new_node, move = node.select_child()
+                    except:
+                        tie_game = True
+                    #new_node, move = node.select_child()
                     node = rollout_times(node, training_time, AI)
                     # print([(n.win, n.games) for n in node.children])
-                    node, move = node.select_child()
+                    try:
+                        node, move = node.select_child()
+                    except:
+                        tie_game = True
+                    #node, move = node.select_child()
                     board, winner = drop_dice(board, move, AI)
                     count = (count + 1)%2
 
@@ -397,14 +419,17 @@ if __name__ == '__main__':
 
             #print(board)
             print_board(board)
+            if tie_game == True:
+                print('No winner, tie game')
 
             if winner != 0:
                 print('Winner : ', 'SIMPLE_AI' if winner == PLAYER else 'AI')
                 break
+        print(' Total node visit count: ',mcts.visit_count)
     
     if play_decision == 4:
-        SIMPLE_AI_winning_time, AI_winning_time, tide_game_times = test_hundred_times()
-        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\n tide games: ', tide_game_times)
+        SIMPLE_AI_winning_time, AI_winning_time, tie_game_times = test_hundred_times()
+        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\n tie games: ', tie_game_times)
         
 
                 
