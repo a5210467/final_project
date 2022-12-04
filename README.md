@@ -15,6 +15,8 @@ The game ends when there is a 4-in-a-row or column or diaginal or it is a stalem
 
 I am using the MCTS for implement the AI. I still not implement the easy AI.
 
+Update 03/12/2022 I am already finish the easy AI. 
+
 https://github.com/KeithGalli/Connect4-Python is a reference for me to implement the rule and logic.
 https://github.com/floriangardin/connect4-mcts/blob/master/main.py is also a reference for me to implement the AI
 
