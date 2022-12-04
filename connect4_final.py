@@ -223,12 +223,14 @@ def test_hundred_times(mcts):
     SIMPLE_AI_winning_time = 0
     AI_winning_time = 0
     tie_game_time = 0
+    visit_count_list = []
+    score_total_list = []
 
     
     for i in range(100):
         board = create_new_board()
         count = 0
-        training_time = 1500
+        training_time = 2000
         node = mcts
         #print_board(board)
         winner = 0
@@ -286,8 +288,10 @@ def test_hundred_times(mcts):
                 else:
                     AI_winning_time +=1
                 break
+        visit_count_list.append(mcts.visit_count)
+        score_total_list.append(mcts.score_total)
     
-    return SIMPLE_AI_winning_time, AI_winning_time, tie_game_time, mcts.visit_count, mcts.score_total
+    return SIMPLE_AI_winning_time, AI_winning_time, tie_game_time, mcts.visit_count, mcts.score_total, visit_count_list, score_total_list
 
 
 
@@ -305,7 +309,7 @@ if __name__ == '__main__':
 
     mcts = None
 
-    for i in range(1500):
+    for i in range(700):
         mcts = rollout(mcts)
         if i % (1000 // 10) == 0: print(i, mcts.score_total /mcts.visit_count)
     
@@ -428,7 +432,7 @@ if __name__ == '__main__':
         print(' Total node visit count: ',mcts.visit_count)
     
     if play_decision == 4:
-        SIMPLE_AI_winning_time, AI_winning_time, tie_game_times, visit_count ,score_total = test_hundred_times(mcts)
+        SIMPLE_AI_winning_time, AI_winning_time, tie_game_times, visit_count ,score_total, visit_count_list, score_total_list = test_hundred_times(mcts)
         print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\n tie games: ', tie_game_times, '\n visit node total: ', visit_count, '\n score total is: ', score_total)
         
 
