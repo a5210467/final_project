@@ -429,7 +429,7 @@ if __name__ == '__main__':
     
     if play_decision == 4:
         SIMPLE_AI_winning_time, AI_winning_time, tie_game_times, visit_count ,score_total = test_hundred_times(mcts)
-        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\n tie games: ', tie_game_times)
+        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\n tie games: ', tie_game_times, '\n visit node total: ', visit_count, '\n score total is: ', score_total)
         
 
                 
