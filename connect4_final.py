@@ -219,7 +219,7 @@ def simeple_AI_choice(board):
     return choose
     return None
 
-def test_hundred_times():
+def test_hundred_times(mcts):
     SIMPLE_AI_winning_time = 0
     AI_winning_time = 0
     tie_game_time = 0
@@ -428,7 +428,7 @@ if __name__ == '__main__':
         print(' Total node visit count: ',mcts.visit_count)
     
     if play_decision == 4:
-        SIMPLE_AI_winning_time, AI_winning_time, tie_game_times = test_hundred_times()
+        SIMPLE_AI_winning_time, AI_winning_time, tie_game_times = test_hundred_times(mcts)
         print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\n tie games: ', tie_game_times)
         
 
