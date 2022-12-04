@@ -433,7 +433,7 @@ if __name__ == '__main__':
     
     if play_decision == 4:
         SIMPLE_AI_winning_time, AI_winning_time, tie_game_times, visit_count ,score_total, visit_count_list, score_total_list = test_hundred_times(mcts)
-        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\n tie games: ', tie_game_times, '\n visit node total: ', visit_count, '\n score total is: ', score_total)
+        print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\nTie games: ', tie_game_times, '\nVisit node total: ', visit_count, '\nScore total is: ', score_total)
         print('Visit node count for each of 100 game list: ',visit_count_list)
         print('Score total list for each of 100 game list: ',score_total_list) 
         
