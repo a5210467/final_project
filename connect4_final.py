@@ -228,7 +228,7 @@ def test_hundred_times(mcts):
     for i in range(100):
         board = create_new_board()
         count = 0
-        training_time = 2000
+        training_time = 1500
         node = mcts
         #print_board(board)
         winner = 0
