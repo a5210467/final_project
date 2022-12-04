@@ -9,6 +9,8 @@ File connect4_final.py is the running file.
 
 use python3 connect4_final to run the file.
 
+First you need to set the table size. The stardand size is 6*7 which means 6 rows and 7 columns. After that you have 4 option to play the game. you can see the message print from the terminal.
+
 <<<<<<< HEAD
 The rule is here. For each player there has 15% chance to drop the dice and go to next round. 
 =======
