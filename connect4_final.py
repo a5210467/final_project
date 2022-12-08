@@ -16,6 +16,9 @@ AI =2
 PLAYER_DICE = 1
 AI_DICE = 2
 
+EMPTY = 0
+ARRAY_LENGTH = 4
+
 DROP_PROBABILITY = 0.10
 
 def create_new_board():
@@ -225,6 +228,7 @@ def test_hundred_times(mcts):
     tie_game_time = 0
     visit_count_list = []
     score_total_list = []
+    score_count_list = []
 
     
     for i in range(100):
@@ -250,6 +254,7 @@ def test_hundred_times(mcts):
                         new_node = node.get_child(move)
                     except:
                         tie_game_time += 1
+                        score_count_list.append(0)
                         break
                     node = rollout_times(node, training_time, PLAYER).get_child(move)
                     board, winner = drop_dice(board, move, PLAYER)
@@ -266,6 +271,7 @@ def test_hundred_times(mcts):
                         new_node, move = node.select_child()
                     except:
                         tie_game_time += 1
+                        score_count_list.append(0)
                         break
                     node = rollout_times(node, training_time, AI)
                     # print([(n.win, n.games) for n in node.children])
@@ -273,6 +279,7 @@ def test_hundred_times(mcts):
                         node, move = node.select_child()
                     except:
                         tie_game_time += 1
+                        score_count_list.append(0)
                         break
                     board, winner = drop_dice(board, move, AI)
                     count = (count + 1)%2
@@ -285,13 +292,103 @@ def test_hundred_times(mcts):
                 print('Winner : ', 'SIMPLE_AI' if winner == PLAYER else 'AI')
                 if winner == PLAYER:
                     SIMPLE_AI_winning_time += 1
+                    score_count_list.append(check_score(board, PLAYER))
                 else:
                     AI_winning_time +=1
+                    score_count_list.append(check_score(board, AI))
                 break
         visit_count_list.append(mcts.visit_count)
         score_total_list.append(mcts.score_total)
     
-    return SIMPLE_AI_winning_time, AI_winning_time, tie_game_time, mcts.visit_count, mcts.score_total, visit_count_list, score_total_list
+    return SIMPLE_AI_winning_time, AI_winning_time, tie_game_time, mcts.visit_count, mcts.score_total, visit_count_list, score_total_list, score_count_list
+
+def count_weight(array_4, player_dice):
+    weight = 0
+    array_4 = np.array2string(array_4)
+    array_4 = array_4.replace('[','')
+    array_4 = array_4.replace(']','')
+    array_4 = array_4.replace(' ','')
+    #print(player_dice, array_4)
+
+
+    #win case: no need for count weight
+    #if array_4.count(player_dice) == 4:
+    '''
+    if np.count_nonzero(array_4 == player_dice) == 4:
+        weight = 0
+    elif np.count_nonzero(array_4 == player_dice) == 3 :
+        weight = 5
+    elif np.count_nonzero(array_4 == player_dice) == 2:
+        weight = 10
+    elif np.count_nonzero(array_4 == player_dice) == 1:
+        weight = 20
+    else:
+        weight = 1
+    '''
+    if array_4.find(str(player_dice)*3) >= 0:
+        weight = 5
+    elif array_4.find(str(player_dice)*2) >= 0:
+        weight = 10
+    elif array_4.find(str(player_dice)) >= 0:
+        weight = 20
+    else:
+        weight = 1
+    #print(weight)    
+    return weight
+
+
+def check_score(board_, winner):
+    #print(winner == PLAYER)
+    #print(winner == AI)
+    check_dice = 0
+    score = 0
+    board = board_.copy()
+    #print(board)
+    #check the loser dice
+    if winner == PLAYER:
+        check_dice = AI_DICE
+        #print(check_dice)
+    if winner == AI:
+        check_dice = PLAYER_DICE
+        #print(check_dice)
+    #print(check_dice)
+    
+    #sliding window
+    for i in range(ROW_NUMBER - ARRAY_LENGTH + 1):
+        for j in range (COLUMN_NUMBER - ARRAY_LENGTH + 1):
+            array_row = board[i,j:j+ARRAY_LENGTH] 
+            array_col = board[i:i+ARRAY_LENGTH, j]
+            matrix = board[i:i+ARRAY_LENGTH, j:j+ARRAY_LENGTH]
+            array_diag = np.diag(matrix)
+            array_oppo_diag = np.diag(np.fliplr(matrix))
+            temp_score = max(count_weight(array_row, check_dice) , count_weight(array_col, check_dice) , count_weight(array_diag, check_dice) , count_weight(array_oppo_diag, check_dice) )
+            #print(temp_score)
+            if score < temp_score:
+                score = temp_score
+
+    #miss count row
+    for i in range(ROW_NUMBER - ARRAY_LENGTH + 1 , ROW_NUMBER):
+        for j in range(COLUMN_NUMBER - ARRAY_LENGTH + 1):
+            array_row = board[i,j:j+ARRAY_LENGTH]
+            temp_score = count_weight(array_row, check_dice)
+            #print(temp_score)
+            if score > temp_score:
+                score = temp_score
+    
+    #miss count col
+    for j in range(COLUMN_NUMBER - ARRAY_LENGTH + 1, COLUMN_NUMBER):
+        for i in range(ROW_NUMBER - ARRAY_LENGTH +1):
+            array_col = board[i:i+ARRAY_LENGTH, j]
+            temp_score = count_weight(array_col, check_dice)
+            #print(temp_score)
+            if score < temp_score:
+                score = temp_score
+    #print(score)
+    if winner == PLAYER:
+        return -score
+    else:
+        return score
+    return score
 
 
 
@@ -432,10 +529,11 @@ if __name__ == '__main__':
         print(' Total node visit count: ',mcts.visit_count)
     
     if play_decision == 4:
-        SIMPLE_AI_winning_time, AI_winning_time, tie_game_times, visit_count ,score_total, visit_count_list, score_total_list = test_hundred_times(mcts)
+        SIMPLE_AI_winning_time, AI_winning_time, tie_game_times, visit_count ,score_total, visit_count_list, score_total_list, score_count_list = test_hundred_times(mcts)
         print('SIMPLE_AI win: ', SIMPLE_AI_winning_time, '\nAI win: ', AI_winning_time, '\nTie games: ', tie_game_times, '\nVisit node total: ', visit_count, '\nScore total is: ', score_total)
         print('Visit node count for each of 100 game list: ',visit_count_list)
         print('Score total list for each of 100 game list: ',score_total_list) 
+        print('Score count list for each of 100 game list: ',score_count_list)
         
 
                 

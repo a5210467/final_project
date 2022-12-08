@@ -44,4 +44,15 @@ print(get_next_open_row(board,2))
 '''
 for i in range(1000):
     while True:
-'''        
+'''   
+
+array_4 = np.array([1,2,1,2])
+array_4_1 = np.array2string(array_4)
+array = array_4_1.replace('[','')
+array = array.replace(']','')
+array = array.replace(' ','')
+print(array,array.find('11'))
+
+x = 3
+y = str(x)*3
+print(y)
