@@ -332,7 +332,7 @@ def count_weight(array_4, player_dice):
     elif array_4.find(str(player_dice)) >= 0:
         weight = 20
     else:
-        weight = 1
+        weight = 20
     #print(weight)    
     return weight
 
@@ -341,7 +341,7 @@ def check_score(board_, winner):
     #print(winner == PLAYER)
     #print(winner == AI)
     check_dice = 0
-    score = 0
+    score = 20
     board = board_.copy()
     #print(board)
     #check the loser dice
@@ -363,7 +363,7 @@ def check_score(board_, winner):
             array_oppo_diag = np.diag(np.fliplr(matrix))
             temp_score = max(count_weight(array_row, check_dice) , count_weight(array_col, check_dice) , count_weight(array_diag, check_dice) , count_weight(array_oppo_diag, check_dice) )
             #print(temp_score)
-            if score < temp_score:
+            if score > temp_score:
                 score = temp_score
 
     #miss count row
@@ -381,7 +381,7 @@ def check_score(board_, winner):
             array_col = board[i:i+ARRAY_LENGTH, j]
             temp_score = count_weight(array_col, check_dice)
             #print(temp_score)
-            if score < temp_score:
+            if score > temp_score:
                 score = temp_score
     #print(score)
     if winner == PLAYER:
