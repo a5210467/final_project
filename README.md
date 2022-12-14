@@ -25,3 +25,13 @@ MCTS chapter in class is also a reference for me. I implment the Node based on t
 After you run the program. first the AI will search for 800 times for initial and then based on your move to learn more.
 
 For playing the game AI will automatically drop the dice. For you. you need enter the corresponding column for drop the dice to continue playing. You can only enter numbers between the column size otherwise it will throw a exception.
+
+
+Update:
+For NN network. I use the code example in the class to train the NN network.
+
+https://colab.research.google.com/drive/1QF8IJHlZ597esIU-vmW7u9KARhyXIjOY?authuser=1#scrollTo=iD67tKPuMaTr is the link for me to implement the NN network.
+
+For NN network. Use the NN_Connect4.ipynb note book file. execute the code from the begining to end. until you find a function called play_it. that's the function you can play with AI. I use Minimax tree struction but with limit depth to limit the time.
+
+For function test_hundred_times you can see the result for 100 simulation games that AI against simple AI.
