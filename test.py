@@ -46,13 +46,6 @@ for i in range(1000):
     while True:
 '''   
 
-array_4 = np.array([1,2,1,2])
-array_4_1 = np.array2string(array_4)
-array = array_4_1.replace('[','')
-array = array.replace(']','')
-array = array.replace(' ','')
-print(array,array.find('11'))
-
-x = 3
-y = str(x)*3
-print(y)
+array_4 = np.array([1,2,3,4])
+col = np.random.choice(array_4, size=1)[0]
+print(col)
