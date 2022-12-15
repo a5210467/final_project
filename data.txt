@@ -34,6 +34,7 @@ Score count list for each of 100 game list:  [5, 10, 20, 5, 20, 10, 5, 5, 10, 0,
 
 Please input row number:  8
 Please input col number:  6
+SIMPLE_AI win:  12 
 AI win:  70 
 Tie games:  18 
 Visit node total:  2647475 
